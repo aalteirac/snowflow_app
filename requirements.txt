@@ -10,3 +10,5 @@ graphviz~=0.20.1
 wordcloud
 streamlit-elements
 streamlit-login-page==0.0.8
+hydralit_components
+
