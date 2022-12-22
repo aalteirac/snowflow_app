@@ -3,36 +3,35 @@ import pandas as pd
 import altair as alt
 import graphviz
 from utils.snowflake_connector import query_snowflake
+import hydralit_components as hc
 
 
 def get_page():
-    col0, col1, col2, col3, col4, col5 = st.columns(6)
-    tot_query = "select count(*) as total from " \
-                "snowvation.workflow.workflow_status wrkflw; "
-    df_db = query_snowflake(tot_query)
-    col1.metric(label="Total Request Count", value=df_db['TOTAL'][0])
-    tot_query = "select count(*) as total from " \
-                "snowvation.workflow.workflow_status wrkflw where w_status = 'Completed' or w_status = 'Approved'; "
-    df_db = query_snowflake(tot_query)
-    col2.metric(label="Completed Count", value=df_db['TOTAL'][0])
-    tot_query = "select count(*) as total from " \
-                "snowvation.workflow.workflow_status wrkflw where w_status = 'Rejected'; "
-    df_db = query_snowflake(tot_query)
-    col3.metric(label="Rejected Count", value=df_db['TOTAL'][0])
-
-    avg_query = "select avg( timediff('minute', wrkflw.w_created, case when wrkflw.w_lastmodified is null then " \
+    countReq={'icon': 'fa fa-hashtag','icon_color':'darkgrey'}
+    comp = {'icon': 'fa fa-check','icon_color':'#29b6e9'}
+    rej = {'icon': 'fa fa-skull-crossbones','icon_color':'coral'}
+    tm={'icon': 'fa fa-hourglass','icon_color':'darkseagreen'}
+    col0, col1, col2, col3= st.columns(4)
+    icoSize="30vw"
+    with col0:
+        tot_query = "select count(*) as total from snowvation.workflow.workflow_status wrkflw; "
+        df_db = query_snowflake(tot_query)
+        hc.info_card(key="2",title=str(df_db['TOTAL'][0]), title_text_size="12vw",content="Total Request Count",icon_size=icoSize,theme_override=countReq)
+    with col1:
+        tot_query = "select count(*) as total from snowvation.workflow.workflow_status wrkflw where w_status = 'Completed' or w_status = 'Approved'; "
+        df_db = query_snowflake(tot_query)
+        hc.info_card(key="3",title=str(df_db['TOTAL'][0]),title_text_size="12vw",content="Completed Count",icon_size=icoSize,theme_override=comp)   
+    with col2:
+        tot_query = "select count(*) as total from snowvation.workflow.workflow_status wrkflw where w_status = 'Rejected'; "
+        df_db = query_snowflake(tot_query)
+        hc.info_card(key="4",title=str(df_db['TOTAL'][0]),title_text_size="12vw",content="Rejected Count",icon_size=icoSize,theme_override=rej)      
+    with col3:
+        avg_query = "select avg( timediff('minute', wrkflw.w_created, case when wrkflw.w_lastmodified is null then " \
                 "wrkflw.w_created else wrkflw.w_lastmodified end)) as Average_Request_Time from " \
                 "snowvation.workflow.workflow_status wrkflw where w_status = 'Completed' and W_ID not like '12%'; "
-    df_db = query_snowflake(avg_query)
-    # st.markdown("<h1 style='text-align: center; color: black;'>{0}</h1>".format("Average Request Time in Seconds"),
-    #            unsafe_allow_html=True)
-    # st.markdown("<h1 style='text-align: center; color: blue;'>{0}</h1>".format(df_db['AVERAGE_REQUEST_TIME'][0]),
-    #            unsafe_allow_html=True)
-    col4.metric(label="Average time taken in seconds", value=round(df_db['AVERAGE_REQUEST_TIME'][0],2))
+        df_db = query_snowflake(avg_query)
+        hc.info_card(key="5",title=str(round(df_db['AVERAGE_REQUEST_TIME'][0],2))+'sec',title_text_size="12vw",content="Average Time",icon_size=icoSize,theme_override=tm)
 
-    st.write("")
-    st.write("")
-    st.write("")
     st.write("")
 
     fig_col1, fig_col2 = st.columns(2)

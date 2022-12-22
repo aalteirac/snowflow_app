@@ -17,7 +17,7 @@ role = st.session_state['authentication_status']
 
 set_session_state()
 
-setTransition()
+# setTransition()
 page = option_menu("SnowFlow", ["Home", "Search", "Open Requests",'Exit'],
                    icons=['house', 'binoculars-fill', "list-task",'door-open'],
                    menu_icon="search", default_index=0, orientation="horizontal",
@@ -33,20 +33,57 @@ page = option_menu("SnowFlow", ["Home", "Search", "Open Requests",'Exit'],
 
 # page
 hvar = """  <script>
-                console.log("HEEEEEYY" + new Date().getTime())
+                function debounce(func, wait, immediate, context) {
+                    var result;
+                    var timeout = null;
+                    return function() {
+                        var ctx = context || this, args = arguments;
+                        var later = function() {
+                            timeout = null;
+                            if (!immediate) result = func.apply(ctx, args);
+                        };
+                        var callNow = immediate && !timeout;
+                        // Tant que la fonction est appelée, on reset le timeout.
+                        clearTimeout(timeout);
+                        timeout = setTimeout(later, wait);
+                        if (callNow) result = func.apply(ctx, args);
+                        return result;
+                    };
+                }
 
+                function fade(){
+                    window.parent.document.body.style.transition = "opacity 0.05s";
+                    window.parent.document.body.style.opacity="0.01";
+                    setTimeout(()=>{
+                        window.parent.document.body.style.opacity="1";
+                        //window.parent.document.body.style.position="static";
+                        //window.parent.document.body.style.left="0px";
+                        load=false;
+                    },800)
+                }
+                var load;
+                 window.parent.document.addEventListener("DOMNodeInserted", function (event) {
+                            if(load!=true){
+                                fade()
+                                //debounce(fade,100)
+                                load=true;
+                            }
+                            
+                        }, false);
+                console.log('toto')        
                 var my_awesome_script = window.parent.document.createElement('script');
-                my_awesome_script.innerHTML=`document.addEventListener("DOMNodeInserted", function (event) {
-                        console.log(event.relatedNode,event.relatedNode.className)
-                        event.relatedNode.style.opacity="0";
-                        setTimeout(()=>{event.relatedNode.style.opacity="1";},400)
-                    }, false);`;
+                my_awesome_script.innerHTML=`
+                        var load;
+                        document.addEventListener("DOMNodeInserted", function (event) {
+                            
+                        }, false);`;
                 window.parent.document.head.appendChild(my_awesome_script);
 
     
             </script> """
 
-#components.html(hvar, height=0, width=0)
+components.html(hvar, height=0, width=0)
+emp=st.empty()
 if page == 'Home':
     analytics.get_page()
 if page == 'Search':
