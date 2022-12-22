@@ -83,7 +83,6 @@ hvar = """  <script>
             </script> """
 
 # components.html(hvar, height=0, width=0)
-emp=st.empty()
 if page == 'Home':
     analytics.get_page()
 if page == 'Search':
