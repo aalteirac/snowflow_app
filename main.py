@@ -17,7 +17,7 @@ role = st.session_state['authentication_status']
 
 set_session_state()
 
-# setTransition()
+setTransition()
 page = option_menu("SnowFlow", ["Home", "Search", "Open Requests",'Exit'],
                    icons=['house', 'binoculars-fill', "list-task",'door-open'],
                    menu_icon="search", default_index=0, orientation="horizontal",
@@ -82,7 +82,7 @@ hvar = """  <script>
     
             </script> """
 
-components.html(hvar, height=0, width=0)
+# components.html(hvar, height=0, width=0)
 emp=st.empty()
 if page == 'Home':
     analytics.get_page()
