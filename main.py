@@ -85,10 +85,14 @@ hvar = """  <script>
 # components.html(hvar, height=0, width=0)
 if page == 'Home':
     analytics.get_page()
+    st.write('')
 if page == 'Search':
     varun.varun_page()
+    st.write('')
 if page == 'Open Requests':
     tony.tony_page()
+    st.write('')
 if page == 'Exit':
     login.logout()
+    st.write('')
 
