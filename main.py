@@ -33,51 +33,45 @@ page = option_menu("SnowFlow", ["Home", "Search", "Open Requests",'Exit'],
 
 # page
 hvar = """  <script>
-                function debounce(func, wait, immediate, context) {
-                    var result;
-                    var timeout = null;
+                function debounce(func, wait, immediate) {
+                    var timeout;
                     return function() {
-                        var ctx = context || this, args = arguments;
-                        var later = function() {
-                            timeout = null;
-                            if (!immediate) result = func.apply(ctx, args);
-                        };
+                        var context = this,
+                        args = arguments;
                         var callNow = immediate && !timeout;
-                        // Tant que la fonction est appelée, on reset le timeout.
                         clearTimeout(timeout);
-                        timeout = setTimeout(later, wait);
-                        if (callNow) result = func.apply(ctx, args);
-                        return result;
-                    };
+                        timeout = setTimeout(function() {
+                            timeout = null;
+                            if (!immediate) {
+                                func.apply(context, args);
+                            }
+                        }, wait);
+                        if (callNow) func.apply(context, args);
+                    }
                 }
 
                 function fade(){
-                    window.parent.document.body.style.transition = "opacity 0.05s";
+                    window.parent.document.body.style.transition = "opacity 0s";
                     window.parent.document.body.style.opacity="0.01";
                     setTimeout(()=>{
+                        window.parent.document.body.style.transition = "opacity 1.2s";
                         window.parent.document.body.style.opacity="1";
                         //window.parent.document.body.style.position="static";
                         //window.parent.document.body.style.left="0px";
                         load=false;
-                    },800)
+                    },1800)
                 }
                 var load;
-                 window.parent.document.addEventListener("DOMNodeInserted", function (event) {
-                            if(load!=true){
-                                fade()
-                                //debounce(fade,100)
-                                load=true;
-                            }
-                            
-                        }, false);
-                console.log('toto')        
+                 window.parent.document.addEventListener("DOMNodeInserted",
+                                debounce(fade,3000,true)
+                              , false);      
                 var my_awesome_script = window.parent.document.createElement('script');
                 my_awesome_script.innerHTML=`
                         var load;
                         document.addEventListener("DOMNodeInserted", function (event) {
                             
                         }, false);`;
-                window.parent.document.head.appendChild(my_awesome_script);
+                //window.parent.document.head.appendChild(my_awesome_script);
 
     
             </script> """
