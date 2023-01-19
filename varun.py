@@ -252,7 +252,7 @@ def varun_page():
                     options=schema_list,
                     index=1
                 )
-        emp=st.empty()
+
         df_sch = query_snowflake("SHOW TABLES IN {0}.{1};".format(database, schema))
         
         for index, row in df_sch.iterrows():
@@ -270,6 +270,7 @@ def varun_page():
         selected_options_approval = []
         selected_options_use = []
         length = len(search_list)
+        st.subheader("Request access for below Objects")
         while i < length:
 
             if 'CUSTOMER' in search_list[i]:
@@ -277,12 +278,12 @@ def varun_page():
                 print(search_list[i])
                 query="select count(1) from snowvation.workflow.workflow_status where w_object= '"+search_list[i]+"';"
                 print(query)
-                df_sch = query_snowflake_no_cache(query)
+                df_sch = query_snowflake(query)
                 selected_options_use.append(df_sch['COUNT(1)'].tolist()[0])
             else:
                 selected_options_approval.append('🚀')
                 query="select count(1) from snowvation.workflow.workflow_status where w_object= '"+search_list[i]+"';"
-                df_sch = query_snowflake_no_cache(query)
+                df_sch = query_snowflake(query)
                 selected_options_use.append(df_sch['COUNT(1)'].tolist()[0])
             i += 1
 
@@ -294,7 +295,7 @@ def varun_page():
             'Access in Last 24 hours': selected_options_use
             })
 
-        st.subheader("Request access for below Objects")
+       
 
         #for objects in selected_options:
         #        st.write("{0}".format(objects))
@@ -304,6 +305,7 @@ def varun_page():
         gb.configure_column('Table Name', headerCheckboxSelection = True)
         gb.configure_side_bar()
         gb.configure_selection('multiple', use_checkbox=True, groupSelectsChildren="Group checkbox select children")
+
 
         gridOptions = gb.build()
         gridOptions['rowHeight']=35
@@ -342,20 +344,20 @@ def varun_page():
                     "--ag-list-item-height": "30px"
                 }
             }
-        with emp:
-            grid_response= AgGrid(
-                table_df,
-                gridOptions=gridOptions,
-                allow_unsafe_jscode=True,
-                data_return_mode='AS_INPUT', 
-                update_mode='MODEL_CHANGED', 
-                fit_columns_on_grid_load=True,
-                enable_enterprise_modules=False,
-                height=350, 
-                width='100%',
-                custom_css=custom_css,
-                reload_data=False
-            )
+        grid_response= AgGrid(
+            table_df,
+            gridOptions=gridOptions,
+            allow_unsafe_jscode=True,
+            data_return_mode='AS_INPUT', 
+            update_mode='MODEL_CHANGED', 
+            fit_columns_on_grid_load=True,
+            enable_enterprise_modules=False,
+            height=350, 
+            width='100%',
+            custom_css=custom_css,
+            reload_data=False
+        )
+            
 
         request_submit = st.button("Request Access")
         m = st.markdown("""
@@ -371,6 +373,7 @@ def varun_page():
         </style>""", unsafe_allow_html=True)
 
         selected = grid_response['selected_rows']
+        st.text(selected)
         if selected:
             selected_rows = pd.DataFrame(selected)
             #print(selected_rows)

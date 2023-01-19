@@ -76,7 +76,7 @@ hvar = """  <script>
     
             </script> """
 
-# components.html(hvar, height=0, width=0)
+#components.html(hvar, height=0, width=0)
 if page == 'Home':
     analytics.get_page()
     st.write('')
