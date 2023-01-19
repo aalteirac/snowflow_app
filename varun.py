@@ -373,7 +373,6 @@ def varun_page():
         </style>""", unsafe_allow_html=True)
 
         selected = grid_response['selected_rows']
-        st.text(selected)
         if selected:
             selected_rows = pd.DataFrame(selected)
             #print(selected_rows)
