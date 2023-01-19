@@ -278,12 +278,12 @@ def varun_page():
                 print(search_list[i])
                 query="select count(1) from snowvation.workflow.workflow_status where w_object= '"+search_list[i]+"';"
                 print(query)
-                df_sch = query_snowflake(query)
+                df_sch = query_snowflake_no_cache(query)
                 selected_options_use.append(df_sch['COUNT(1)'].tolist()[0])
             else:
                 selected_options_approval.append('🚀')
                 query="select count(1) from snowvation.workflow.workflow_status where w_object= '"+search_list[i]+"';"
-                df_sch = query_snowflake(query)
+                df_sch = query_snowflake_no_cache(query)
                 selected_options_use.append(df_sch['COUNT(1)'].tolist()[0])
             i += 1
 
